@@ -1,0 +1,3 @@
+Dialogs.showPlainMessage('hello' ,
+        """
+The macro is starting""")
