@@ -1,0 +1,15 @@
+guiscript=true
+
+println "Macro is starting"
+
+def result = new Dialogs.Builder()
+            .title("Area")
+            .headerText("Manually")
+            .contentText("Annotate the area of interest")
+            .buttons("OK", "Cancel")
+            .nonModal()
+            .showAndWait()
+ if (!("OK" == result.get().getText())) Dialogs.showPlainMessage('Cancelled')
+    else {......
+
+println "Now the final stuff runs"    
