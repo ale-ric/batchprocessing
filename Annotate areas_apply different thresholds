@@ -1,0 +1,78 @@
+guiscript=true
+
+/* This macro is design for QuPath.
+Draw area, apply threshold, save in files (batch processing) */
+
+import static qupath.lib.gui.scripting.QPEx.*
+import static qupath.lib.scripting.QP.*
+import qupath.lib.gui.tools.MeasurementExporter
+import qupath.lib.objects.PathCellObject
+
+import java.lang.Object
+import javafx.application.Platform
+import qupath.lib.gui.scripting.completors.DefaultAutoCompletor
+import qupath.lib.gui.scripting.completors.GroovyAutoCompletor
+[
+        'Gall-1.0',
+        'Gall-0.5',
+        'Gall-0.75',
+        'Gall-0.6'
+]
+
+/* Step 1: Start fresh */
+resetSelection()
+
+def imageData = QP.getCurrentImageData()
+def server = imageData.getServer()
+getCurrentImageData()
+Platform.runLater {
+    getCurrentViewer().setImageData(imageData)
+}
+
+/* Step 2: Set image type */
+    /* Change image type if necessary */
+setImageType('BRIGHTFIELD_H_DAB') 
+
+/* Step 3: Annotation of the areas/regions of interest */
+
+    def result = new Dialogs.Builder()
+            .title('Action required')
+            .headerText('Areas of interest')
+            .contentText('Annotate the Cortex and the Corpus Callosum')
+            .buttons('OK', 'Cancel')
+            .nonModal()
+            .showAndWait()
+
+    /* Continue with anything after the button is pressed here */
+    println result
+
+/* Step 4: Select Annotation by classification */
+    /* Note - Change the classification of the object if necessary */
+        selectObjectsByClassification('Corps Calleux (L or R)') 
+       
+/* Step 5: (CORPUS CALLOSUM) Apply multiple threshold (load pixel classifier)  */
+    /* Note - Don't forget to change the Pixel Classifier names */
+        addPixelClassifierMeasurements('Gall-1.0', 'Gall-1.0')
+        addPixelClassifierMeasurements('Gall-0.5', 'Gall-0.5')
+        addPixelClassifierMeasurements('Gall-0.75', 'Gall-0.75')
+        addPixelClassifierMeasurements('Gall-0.6', 'Gall-0.6')
+        getProject().getEntry(getCurrentImageData()).saveImageData(getCurrentImageData())
+
+        println 'Measurements added for the CORPUS CALLOSUM in image' 
+
+/* Step 6: (CORTEX) Apply multiple threshold (load pixel classifier) */
+    /* Change the classification of the object if necessary */
+        resetSelection()
+        selectObjectsByClassification('Cortex (L or R)')
+
+    /* Change the Pixel Classifier Names */
+        addPixelClassifierMeasurements('Cortex Gall-0.45','Cortex Gall-0.45')
+        addPixelClassifierMeasurements('Cortex Gall-0.55', 'Cortex Gall-0.55')
+        addPixelClassifierMeasurements('Cortex Gall-0.65', 'Cortex Gall-0.65')
+        addPixelClassifierMeasurements('Cortex Gall-0.75', 'Cortex Gall-0.75')
+
+        getProject().getEntry(getCurrentImageData()).saveImageData(getCurrentImageData())
+
+        println 'Measurements added for the CORTEX in image'
+
+    project.syncChanges()
