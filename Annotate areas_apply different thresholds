@@ -46,10 +46,10 @@ setImageType('BRIGHTFIELD_H_DAB')
        
 /* Step 5: (CORPUS CALLOSUM) Apply multiple threshold (load pixel classifier)  */
     /* Note - Don't forget to change the Pixel Classifier names */
-        addPixelClassifierMeasurements('Gall-1.0', 'Gall-1.0')
-        addPixelClassifierMeasurements('Gall-0.5', 'Gall-0.5')
-        addPixelClassifierMeasurements('Gall-0.75', 'Gall-0.75')
-        addPixelClassifierMeasurements('Gall-0.6', 'Gall-0.6')
+        addPixelClassifierMeasurements('Gallcc-1.0', 'Gallcc-1.0')
+        addPixelClassifierMeasurements('Gallcc-0.5', 'Gallcc-0.5')
+        addPixelClassifierMeasurements('Gallcc-0.75', 'Gallcc-0.75')
+        addPixelClassifierMeasurements('Gallcc-0.6', 'Gallcc-0.6')
         getProject().getEntry(getCurrentImageData()).saveImageData(getCurrentImageData())
 
         println 'Measurements added for the CORPUS CALLOSUM in image' 
