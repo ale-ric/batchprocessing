@@ -12,12 +12,6 @@ import java.lang.Object
 import javafx.application.Platform
 import qupath.lib.gui.scripting.completors.DefaultAutoCompletor
 import qupath.lib.gui.scripting.completors.GroovyAutoCompletor
-[
-        'Gall-1.0',
-        'Gall-0.5',
-        'Gall-0.75',
-        'Gall-0.6'
-]
 
 /* Step 1: Start fresh */
 resetSelection()
