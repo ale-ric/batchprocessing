@@ -1,0 +1,90 @@
+guiscript = true
+
+/* This macro is design for QuPath.
+Draw area, apply threshold, save in files (batch processing) */
+
+import static qupath.lib.gui.scripting.QPEx.*
+import static qupath.lib.scripting.QP.*
+import qupath.lib.gui.tools.MeasurementExporter
+import qupath.lib.objects.PathCellObject
+import java.lang.Object
+import javafx.application.Platform
+import qupath.lib.gui.scripting.completors.DefaultAutoCompletor
+import qupath.lib.gui.scripting.completors.GroovyAutoCompletor
+
+/* Step 1: Start fresh */
+resetSelection()
+
+def imageData = QP.getCurrentImageData()
+def server = imageData.getServer()
+getCurrentImageData()
+
+Platform.runLater {
+getCurrentViewer().setImageData(imageData)
+}
+
+/* Step 2: Set a particular image type automatically 
+NOTE - Change image type if necessary */
+
+setImageType('BRIGHTFIELD_H_DAB') 
+
+/* Step 3: Annotation of the areas/regions of interest 
+NOTE - you can change the text inside (...) */
+
+def result = new Dialogs.Builder()
+            .title('Action required')
+            .headerText('Areas of interest')
+            .contentText('Annotate the Cortex and the Corpus Callosum')
+            .buttons('OK', 'Cancel')
+            .nonModal()
+            .showAndWait()
+
+/* Continue with anything after the button is pressed  */
+
+    println result
+
+
+/* Step 4: Select Annotation by classification 
+Note - Change the classification () of the object if necessary */
+
+selectObjectsByClassification('Corps Calleux (L or R)') 
+       
+/* Step 5: (CORPUS CALLOSUM) Apply multiple threshold (load pixel classifier)  
+Note - Don't forget to change the Pixel Classifier names inside () */
+
+addPixelClassifierMeasurements('Gall cc-1.0', 'Gall cc-1.0')
+addPixelClassifierMeasurements('Gall cc-0.5', 'Gall cc-0.5')
+addPixelClassifierMeasurements('Gall cc-0.75', 'Gall cc-0.75')
+addPixelClassifierMeasurements('Gall cc-0.6', 'Gall cc-0.6')
+
+/* Step 6: Adding image data to the project entry */
+
+getProject().getEntry(getCurrentImageData()).saveImageData(getCurrentImageData())
+
+/* Step 7: Confirm that the datas were added */
+println 'Measurements added for the CORPUS CALLOSUM in image' 
+
+/* Step 8: (CORTEX) Select Annotations by classification 
+Change the classification of the object if necessary */
+
+resetSelection()
+selectObjectsByClassification('Cortex (L or R)')
+
+/* Step 9: Apply multiple thresholds (load pixel classifier)
+ Change the Pixel Classifier Names */
+        
+addPixelClassifierMeasurements('Cortex Gall-0.45','Cortex Gall-0.45')
+addPixelClassifierMeasurements('Cortex Gall-0.55', 'Cortex Gall-0.55')
+addPixelClassifierMeasurements('Cortex Gall-0.65', 'Cortex Gall-0.65')
+addPixelClassifierMeasurements('Cortex Gall-0.75', 'Cortex Gall-0.75')
+
+/* Step 10: Adding image data to the project entry */
+
+getProject().getEntry(getCurrentImageData()).saveImageData(getCurrentImageData())
+
+/* Step 11: Confirm entry of datas in the image */
+
+println 'Measurements added for the CORTEX in image'
+
+/* Step 12: Changes should now be reflected in the project directory */
+project.syncChanges()
